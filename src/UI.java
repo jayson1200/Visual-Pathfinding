@@ -6,7 +6,7 @@ import java.util.concurrent.*;
 
 
 
-public class UI implements MouseListener
+public class UI 
 {
     JFrame mainFrame = new JFrame("Pathfinding Visualization");;
     JPanel mainPanel = new JPanel();
@@ -137,6 +137,24 @@ public class UI implements MouseListener
                  declareWallsBOX.setSelected(false);          
             }       
         });
+
+        mainPanel.addMouseListener(new MouseListener()
+        {
+        public void mousePressed(MouseEvent e)
+        {
+            System.out.println("I am pressed");
+            isMousePressed = true;
+        }
+
+        public void mouseReleased(MouseEvent e)
+        {
+            isMousePressed =false;    
+        }
+
+        public void mouseEntered(MouseEvent e){}           
+        public void mouseExited(MouseEvent e){}
+        public void mouseClicked(MouseEvent e){}
+        });
         
 
         for(int row = 0; row < rows; row++)
@@ -192,7 +210,7 @@ public class UI implements MouseListener
                 PathJButton btn = new PathJButton(new BTNCoordinates(row, col));
                 btn.setPreferredSize(new Dimension(btnLenWidSize, btnLenWidSize));
                 mainPanel.add(btn, constraints);
-
+                
 
                 btn.addMouseListener(new MouseListener()
                 {
@@ -227,21 +245,5 @@ public class UI implements MouseListener
 
 
     }
-    
-    public void mousePressed(MouseEvent e)
-    {
-        System.out.println("I am pressed");
-        isMousePressed = true;
-    }
-
-    public void mouseReleased(MouseEvent e)
-    {
-        isMousePressed =false;    
-    }
-
-    public void mouseEntered(MouseEvent e){}           
-    public void mouseExited(MouseEvent e){}
-    public void mouseClicked(MouseEvent e){}
-
 
 }
