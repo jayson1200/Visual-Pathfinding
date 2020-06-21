@@ -1,11 +1,12 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.*;
+import java.util.concurrent.*;
 
 
 
-
-public class UI 
+public class UI implements MouseListener
 {
     JFrame mainFrame = new JFrame("Pathfinding Visualization");;
     JPanel mainPanel = new JPanel();
@@ -37,6 +38,10 @@ public class UI
 
     GridBagConstraints constraints = new GridBagConstraints();
 
+    LinkedList<PathJButton>[] connections;
+
+    /*volatile*/ Boolean isMousePressed = false;
+
 
     public UI(int mRows, int mCols)
     {
@@ -44,7 +49,7 @@ public class UI
         cols = mCols;
 
         
-
+        {
         mainPanel.setLayout(new GridBagLayout());
         settingsPanel.setLayout(optionsLayout);
 
@@ -102,6 +107,36 @@ public class UI
 
        
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        }
+        
+        
+        declareWallsBOX.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                 declareStartBOX.setSelected(false);
+                 declareEndBOX.setSelected(false); 
+                 System.out.println("Declare Check clicked");         
+            }       
+        });
+
+        declareStartBOX.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                 declareWallsBOX.setSelected(false);
+                 declareEndBOX.setSelected(false);          
+            }       
+        });
+
+        declareEndBOX.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                 declareStartBOX.setSelected(false);
+                 declareWallsBOX.setSelected(false);          
+            }       
+        });
         
 
         for(int row = 0; row < rows; row++)
@@ -131,7 +166,7 @@ public class UI
             Runnable runRedraw = () -> redrawArea(Integer.valueOf((Integer) colSpinner.getValue()), (Integer) rowSpinner.getValue());
 
         });
-
+    
         mainFrame.setVisible(true);
 
     }
@@ -139,21 +174,7 @@ public class UI
     private void redrawArea(int mRows, int mCols)
     {
         int rowColAvg = (mRows + mCols) / 2;
-        int largestRowColSize = 0;
         int btnLenWidSize;
-
-        if(mRows > mCols)
-        {
-            largestRowColSize = mRows;
-        }
-        else if(mRows < mCols)
-        {
-            largestRowColSize = mCols;
-        }
-        else if(mRows == mCols)
-        {
-            largestRowColSize = mCols;
-        }
 
         mainPanel.removeAll();
         mainPanel.revalidate();
@@ -168,13 +189,59 @@ public class UI
                 constraints.gridx = row;
                 constraints.gridy = col;
 
-                JButton btn = new JButton();
+                PathJButton btn = new PathJButton(new BTNCoordinates(row, col));
                 btn.setPreferredSize(new Dimension(btnLenWidSize, btnLenWidSize));
                 mainPanel.add(btn, constraints);
+
+
+                btn.addMouseListener(new MouseListener()
+                {
+                    public void mousePressed(MouseEvent e){}
+                    public void mouseReleased(MouseEvent e){}
+
+                    public void mouseEntered(MouseEvent e)
+                    {
+                        System.out.println("Mouse Entered");
+                        if(isMousePressed && declareWallsBOX.isSelected())
+                        {
+                            btn.makeWall();
+                            System.out.println("Should Make wall");     
+                        }
+                        else if(isMousePressed && declareStartBOX.isSelected())
+                        {
+                            btn.makeStart();
+                        }
+                        else if(isMousePressed && declareEndBOX.isSelected())
+                        {
+                            btn.makeEnd();
+                        }
+                    }       
+
+                    public void mouseExited(MouseEvent e){}
+                    public void mouseClicked(MouseEvent e){}
+                });
+
+            
             }
         }
 
 
     }
     
+    public void mousePressed(MouseEvent e)
+    {
+        System.out.println("I am pressed");
+        isMousePressed = true;
+    }
+
+    public void mouseReleased(MouseEvent e)
+    {
+        isMousePressed =false;    
+    }
+
+    public void mouseEntered(MouseEvent e){}           
+    public void mouseExited(MouseEvent e){}
+    public void mouseClicked(MouseEvent e){}
+
+
 }
