@@ -1,4 +1,6 @@
 import javax.swing.*;
+import javax.swing.event.MouseInputListener;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
@@ -9,7 +11,10 @@ import java.util.concurrent.*;
 public class UI 
 {
     JFrame mainFrame = new JFrame("Pathfinding Visualization");;
-    JPanel mainPanel = new JPanel();
+
+    ArrayList<PathRectangle> initList = new ArrayList<PathRectangle>();
+    MainPanel mainPanel;
+
     JPanel settingsPanel = new JPanel();
 
     SpinnerNumberModel colSpinnerModel = new SpinnerNumberModel(10, 5, null,1); 
@@ -36,21 +41,27 @@ public class UI
 
     GroupLayout optionsLayout = new GroupLayout(settingsPanel);
 
-    GridBagConstraints constraints = new GridBagConstraints();
-
     LinkedList<PathJButton>[] connections;
 
-    /*volatile*/ Boolean isMousePressed = false;
+    
 
 
-    public UI(int mRows, int mCols)
+    public UI()
     {
-        rows = mRows;
-        cols = mCols;
 
+        for(int i = 0; i < 10; i++)
+        {
+            for(int j = 0; i < 10; i++)
+            {
+                initList.add(new PathRectangle(i*49, j*49, 49, 49));
+            }
+        }
+        
+        mainPanel = new MainPanel(10, 10, initList);
+        mainFrame.add(mainPanel);
         
         {
-        mainPanel.setLayout(new GridBagLayout());
+       
         settingsPanel.setLayout(optionsLayout);
 
         optionsLayout.setAutoCreateGaps(true);
@@ -102,12 +113,10 @@ public class UI
             .addComponent(declareWallsBOX))
         );
         
-        mainFrame.add(mainPanel, BorderLayout.CENTER);
+        //mainFrame.add(mainPanel, BorderLayout.CENTER);
         mainFrame.add(settingsPanel, BorderLayout.NORTH);
-
-       
-        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         }
+        
         
         
         declareWallsBOX.addActionListener(new ActionListener()
@@ -138,111 +147,34 @@ public class UI
             }       
         });
 
-        mainPanel.addMouseListener(new MouseListener()
-        {
-        public void mousePressed(MouseEvent e)
-        {
-            System.out.println("I am pressed");
-            isMousePressed = true;
-        }
-
-        public void mouseReleased(MouseEvent e)
-        {
-            isMousePressed =false;    
-        }
-
-        public void mouseEntered(MouseEvent e){}           
-        public void mouseExited(MouseEvent e){}
-        public void mouseClicked(MouseEvent e){}
-        });
-        
-
-        for(int row = 0; row < rows; row++)
-        {
-            for(int col = 0; col < cols; col++)
-            {
-                constraints.gridx = row;
-                constraints.gridy = col;
-
-                JButton btn = new JButton();
-                btn.setPreferredSize(new Dimension(28,28));
-                mainPanel.add(btn, constraints);
-            }
-        }
-
-        mainFrame.pack();
-
         publishBTN.addActionListener(
         new ActionListener()
         {
-            public void actionPerformed(ActionEvent e)
-            {
-                SwingUtilities.invokeLater(runRedraw);
-        
-            }
-
-            Runnable runRedraw = () -> redrawArea(Integer.valueOf((Integer) colSpinner.getValue()), (Integer) rowSpinner.getValue());
-
-        });
+                public void actionPerformed(ActionEvent e)
+                {
+                    SwingUtilities.invokeLater(runRedraw);
+            
+                }
     
+                Runnable runRedraw = () -> redrawArea(Integer.valueOf((Integer) colSpinner.getValue()), (Integer) rowSpinner.getValue());
+    
+            });
+
+
+        mainFrame.pack();
+
+        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.setVisible(true);
 
     }
 
+
+    
     private void redrawArea(int mRows, int mCols)
     {
-        int rowColAvg = (mRows + mCols) / 2;
-        int btnLenWidSize;
-
-        mainPanel.removeAll();
-        mainPanel.revalidate();
-        mainPanel.repaint();
-
-        btnLenWidSize = (int) (-13.2306 * (Math.log(0.0023*rowColAvg)));
-
-        for(int row = 0; row < mRows; row++)
-        {
-            for(int col = 0; col < mCols; col++)
-            {
-                constraints.gridx = row;
-                constraints.gridy = col;
-
-                PathJButton btn = new PathJButton(new BTNCoordinates(row, col));
-                btn.setPreferredSize(new Dimension(btnLenWidSize, btnLenWidSize));
-                mainPanel.add(btn, constraints);
-                
-
-                btn.addMouseListener(new MouseListener()
-                {
-                    public void mousePressed(MouseEvent e){}
-                    public void mouseReleased(MouseEvent e){}
-
-                    public void mouseEntered(MouseEvent e)
-                    {
-                        System.out.println("Mouse Entered");
-                        if(isMousePressed && declareWallsBOX.isSelected())
-                        {
-                            btn.makeWall();
-                            System.out.println("Should Make wall");     
-                        }
-                        else if(isMousePressed && declareStartBOX.isSelected())
-                        {
-                            btn.makeStart();
-                        }
-                        else if(isMousePressed && declareEndBOX.isSelected())
-                        {
-                            btn.makeEnd();
-                        }
-                    }       
-
-                    public void mouseExited(MouseEvent e){}
-                    public void mouseClicked(MouseEvent e){}
-                });
-
-            
-            }
-        }
-
+        //mainPanel.removeAll();
+        //mainPanel.revalidate();
+        //mainPanel.repaint();
 
     }
 

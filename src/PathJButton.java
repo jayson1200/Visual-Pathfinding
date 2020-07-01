@@ -14,21 +14,7 @@ public class PathJButton extends JButton
         coordinates = mCoordinates;
     }
 
-    //Will do operations with Linkedlists in the future
-    public void makeWall()
-    {
-        this.setBackground(Color.BLACK);
-    }
-
-    public void makeStart()
-    {
-        this.setBackground(Color.GREEN);
-    }
-
-    public void makeEnd()
-    {
-        this.setBackground(Color.RED);
-    }
+    
 }
 
 
