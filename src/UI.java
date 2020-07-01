@@ -12,7 +12,7 @@ public class UI
 {
     JFrame mainFrame = new JFrame("Pathfinding Visualization");;
 
-    ArrayList<PathRectangle> initList = new ArrayList<PathRectangle>();
+    ArrayList<ArrayList<PathRectangle>> initList = new ArrayList<ArrayList<PathRectangle>>();
     MainPanel mainPanel;
 
     JPanel settingsPanel = new JPanel();
@@ -33,15 +33,16 @@ public class UI
     JLabel rowsLabel = new JLabel("Rows:");
     JLabel colsLabel = new JLabel("Columns:");
 
-    JCheckBox declareStartBOX = new JCheckBox("Declare Start");
-    JCheckBox declareEndBOX = new JCheckBox("Declare End");
-    JCheckBox declareWallsBOX = new JCheckBox("Declare Walls");
+    static JCheckBox declareStartBOX = new JCheckBox("Declare Start");
+    static JCheckBox declareEndBOX = new JCheckBox("Declare End");
+    static JCheckBox declareWallsBOX = new JCheckBox("Declare Walls");
+    static JCheckBox deselectBOX = new JCheckBox("Deselect");
 
     int rows = 10, cols = 10;
 
     GroupLayout optionsLayout = new GroupLayout(settingsPanel);
 
-    LinkedList<PathJButton>[] connections;
+    LinkedList<PathRectangle>[] connections;
 
     
 
@@ -51,13 +52,19 @@ public class UI
 
         for(int i = 0; i < 10; i++)
         {
-            for(int j = 0; i < 10; i++)
+            ArrayList<PathRectangle> initColList = new ArrayList<PathRectangle>();
+
+            for(int j = 0; j < 10; j++)
             {
-                initList.add(new PathRectangle(i*49, j*49, 49, 49));
+                initColList.add(new PathRectangle(i*49, j*49, 49, 49));
             }
+
+            initList.add(initColList);
         }
+
         
-        mainPanel = new MainPanel(10, 10, initList);
+        
+        mainPanel = new MainPanel(initList);
         mainFrame.add(mainPanel);
         
         {
@@ -85,7 +92,8 @@ public class UI
                         .addComponent(publishBTN)
                         .addComponent(declareStartBOX)
                         .addComponent(declareEndBOX)
-                        .addComponent(declareWallsBOX)))
+                        .addComponent(declareWallsBOX)
+                        .addComponent(deselectBOX)))
 
                        
                         .addComponent(startBTN)
@@ -110,7 +118,8 @@ public class UI
             .addComponent(publishBTN)
             .addComponent(declareStartBOX)
             .addComponent(declareEndBOX)
-            .addComponent(declareWallsBOX))
+            .addComponent(declareWallsBOX)
+            .addComponent(deselectBOX))
         );
         
         //mainFrame.add(mainPanel, BorderLayout.CENTER);
@@ -125,7 +134,7 @@ public class UI
             {
                  declareStartBOX.setSelected(false);
                  declareEndBOX.setSelected(false); 
-                 System.out.println("Declare Check clicked");         
+                 deselectBOX.setSelected(false);        
             }       
         });
 
@@ -134,7 +143,8 @@ public class UI
             public void actionPerformed(ActionEvent e)
             {
                  declareWallsBOX.setSelected(false);
-                 declareEndBOX.setSelected(false);          
+                 declareEndBOX.setSelected(false);   
+                 deselectBOX.setSelected(false);          
             }       
         });
 
@@ -143,7 +153,18 @@ public class UI
             public void actionPerformed(ActionEvent e)
             {
                  declareStartBOX.setSelected(false);
-                 declareWallsBOX.setSelected(false);          
+                 declareWallsBOX.setSelected(false);   
+                 deselectBOX.setSelected(false);       
+            }       
+        });
+
+        deselectBOX.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                 declareStartBOX.setSelected(false);
+                 declareEndBOX.setSelected(false); 
+                 declareWallsBOX.setSelected(false);        
             }       
         });
 
@@ -160,22 +181,45 @@ public class UI
     
             });
 
-
+        declareWallsBOX.setSelected(true);;
         mainFrame.pack();
 
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        mainFrame.setSize(1000, 1000);
         mainFrame.setVisible(true);
 
     }
 
 
     
-    private void redrawArea(int mRows, int mCols)
+    private void redrawArea(int rows, int cols)
     {
         //mainPanel.removeAll();
         //mainPanel.revalidate();
         //mainPanel.repaint();
 
+        int calculatedSize = (int) (-13.2306 * (Math.log(0.0023*( (rows + cols) / 2) )));
+        int mainFrameSize  = ((rows * cols) * calculatedSize) + 4500;
+
+        ArrayList<ArrayList<PathRectangle>> gridList = new ArrayList<ArrayList<PathRectangle>>();
+
+        for(int i = 0; i < rows; i++)
+        {
+            ArrayList<PathRectangle> gridColList = new ArrayList<PathRectangle>();
+
+            for(int j = 0; j < cols; j++)
+            {
+                gridColList.add(new PathRectangle(i*calculatedSize, j*calculatedSize, calculatedSize, calculatedSize));
+            }
+
+            gridList.add(gridColList);
+        }
+
+        mainFrame.remove(mainPanel);
+        mainPanel = new MainPanel(gridList);
+        mainFrame.add(mainPanel);
+        mainFrame.pack();
+        mainFrame.setSize(mainFrameSize, mainFrameSize);
     }
 
 }

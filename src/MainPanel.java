@@ -9,61 +9,95 @@ import java.util.ArrayList;
 
 public class MainPanel extends JPanel {
 
-    private ArrayList<PathRectangle> paintedRectangles = new ArrayList<>();
+    private ArrayList<ArrayList<PathRectangle>> paintedRectangles = new ArrayList<>();
 
-    int rows = 0, cols = 0;
     int rectLenWidSize;
 
 
-    public MainPanel(int mRows, int mCols, ArrayList<PathRectangle> mPathRectangles) 
+    public MainPanel(ArrayList<ArrayList<PathRectangle>> mPathRectangles) 
     {
-        rows = mRows;
-        cols = mCols;
         paintedRectangles = mPathRectangles;
+
+        System.out.println(paintedRectangles.size());
+        System.out.println(paintedRectangles.get(1).size());
 
         addMouseListener(new MouseAdapter()
         {
            
             @Override
             public void mousePressed(MouseEvent e) {
-                
+    
                 for(int i = 0; i < paintedRectangles.size(); i++)
-                    {
-                        if(paintedRectangles.get(i).contains(e.getPoint()))
+                {
+                        for(int j = 0; j < paintedRectangles.get(0).size(); j++)
                         {
-                            //This will have to change in the future just testing it right now
-                            paintedRectangles.get(i).setRecVal(PathRectangle.recType.WALL);
-                            
-                            
-                            repaint();
-                        }
+                            if(paintedRectangles.get(i).get(j).contains(e.getPoint()))
+                            {
+                                if(UI.declareWallsBOX.isSelected())
+                                {
+                                    paintedRectangles.get(i).get(j).setRecVal(PathRectangle.recType.WALL);
+                                }
+                                else if(UI.declareStartBOX.isSelected())
+                                {
+                                    paintedRectangles.get(i).get(j).setRecVal(PathRectangle.recType.STARTNODE);
+                                }
+                                else if(UI.declareEndBOX.isSelected())
+                                {
+                                    paintedRectangles.get(i).get(j).setRecVal(PathRectangle.recType.ENDNODE);
+                                }
+                                else if(UI.deselectBOX.isSelected())
+                                {
+                                    paintedRectangles.get(i).get(j).setRecVal(PathRectangle.recType.UNDECLARED);
+                                }
+
+                            }
                     }
+            
+                }
+                repaint();
             }
         });
 
         addMouseMotionListener(new MouseAdapter()
         {
+
             @Override
             public void mouseDragged(MouseEvent e) 
             {
-                   //System.out.println(e.getPoint());
+                
                     for(int i = 0; i < paintedRectangles.size(); i++)
                     {
-                        if(paintedRectangles.get(i).contains(e.getPoint()))
-                        {
-                            //This will have to change in the future just testing it right now
-                            paintedRectangles.get(i).setRecVal(PathRectangle.recType.WALL);
-                            
-                            
-                            repaint();
+                            for(int j = 0; j < paintedRectangles.get(0).size(); j++)
+                            {
+                                if(paintedRectangles.get(i).get(j).contains(e.getPoint()))
+                                {
+                                    if(UI.declareWallsBOX.isSelected())
+                                    {
+                                        paintedRectangles.get(i).get(j).setRecVal(PathRectangle.recType.WALL);
+                                    }
+                                    else if(UI.declareStartBOX.isSelected())
+                                    {
+                                        paintedRectangles.get(i).get(j).setRecVal(PathRectangle.recType.STARTNODE);
+                                    }
+                                    else if(UI.declareEndBOX.isSelected())
+                                    {
+                                        paintedRectangles.get(i).get(j).setRecVal(PathRectangle.recType.ENDNODE);
+                                    }
+                                    else if(UI.deselectBOX.isSelected())
+                                    {
+                                        paintedRectangles.get(i).get(j).setRecVal(PathRectangle.recType.UNDECLARED);
+                                    }
+                                }
                         }
+                
                     }
+                    repaint();
             }
         });
 
         
         
-        rectLenWidSize = (int) (-13.2306 * (Math.log(0.0023*((mRows + mCols) / 2))));
+        rectLenWidSize = (int) (-13.2306 * (Math.log(0.0023*((paintedRectangles.size() + paintedRectangles.get(0).size()) / 2))));
     }
 
     public void paintComponent(Graphics g)
@@ -72,12 +106,12 @@ public class MainPanel extends JPanel {
         
         Graphics2D g2D = (Graphics2D) g;
 
-        for(int i = 0; i < rows; i++)
+        for(int i = 0; i < paintedRectangles.size(); i++)
         {
-            for(int j = 0; j < cols; j++)
+            for(int j = 0; j < paintedRectangles.get(0).size(); j++)
             {
-                
-                switch(paintedRectangles.get(i).getRecVal())
+              
+                switch(paintedRectangles.get(i).get(j).getRecVal())
                 {
                     case UNDECLARED:
                     g2D.drawRect(i*rectLenWidSize, j*rectLenWidSize, rectLenWidSize, rectLenWidSize);
@@ -98,9 +132,8 @@ public class MainPanel extends JPanel {
                     g2D.fillRect(i*rectLenWidSize, j*rectLenWidSize, rectLenWidSize, rectLenWidSize);
                     break;
                 }
+                g2D.setColor(Color.BLACK);
             }
         }
     }
-
-
 }
