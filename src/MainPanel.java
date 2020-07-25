@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseAdapter;
+import java.awt.event.MouseWheelEvent;
 import java.util.ArrayList;
 
 public class MainPanel extends JPanel {
@@ -17,9 +18,6 @@ public class MainPanel extends JPanel {
     public MainPanel(ArrayList<ArrayList<PathRectangle>> mPathRectangles) 
     {
         paintedRectangles = mPathRectangles;
-
-        System.out.println(paintedRectangles.size());
-        System.out.println(paintedRectangles.get(1).size());
 
         addMouseListener(new MouseAdapter()
         {
@@ -95,8 +93,8 @@ public class MainPanel extends JPanel {
             }
         });
 
-        
-        
+        );
+
         rectLenWidSize = (int) (-13.2306 * (Math.log(0.0023*((paintedRectangles.size() + paintedRectangles.get(0).size()) / 2))));
     }
 
@@ -135,5 +133,13 @@ public class MainPanel extends JPanel {
                 g2D.setColor(Color.BLACK);
             }
         }
+    }
+
+    public int getRectLenWidSize() {
+        return this.rectLenWidSize;
+    }
+
+    public void setRectLenWidSize(int rectLenWidSize) {
+        this.rectLenWidSize = rectLenWidSize;
     }
 }

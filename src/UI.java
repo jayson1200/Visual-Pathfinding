@@ -10,7 +10,7 @@ import java.util.concurrent.*;
 
 public class UI 
 {
-    JFrame mainFrame = new JFrame("Pathfinding Visualization");;
+    static JFrame mainFrame = new JFrame("Pathfinding Visualization");;
 
     ArrayList<ArrayList<PathRectangle>> initList = new ArrayList<ArrayList<PathRectangle>>();
     MainPanel mainPanel;
@@ -61,7 +61,6 @@ public class UI
 
             initList.add(initColList);
         }
-
         
         
         mainPanel = new MainPanel(initList);
@@ -126,7 +125,18 @@ public class UI
         mainFrame.add(settingsPanel, BorderLayout.NORTH);
         }
         
-        
+        mainPanel.addMouseWheelListener(new MouseAdapter()
+        {
+            public void mouseWheelMoved(MouseWheelEvent e)
+            {
+                rectLenWidSize -= e.getPreciseWheelRotation() * 1;
+
+                mainPanel.repaint();
+                mainFrame.revalidate();
+            }
+
+        }
+        );
         
         declareWallsBOX.addActionListener(new ActionListener()
         {
@@ -190,16 +200,12 @@ public class UI
 
     }
 
-
+    
     
     private void redrawArea(int rows, int cols)
     {
-        //mainPanel.removeAll();
-        //mainPanel.revalidate();
-        //mainPanel.repaint();
-
         int calculatedSize = (int) (-13.2306 * (Math.log(0.0023*( (rows + cols) / 2) )));
-        int mainFrameSize  = ((rows * cols) * calculatedSize) + 4500;
+      
 
         ArrayList<ArrayList<PathRectangle>> gridList = new ArrayList<ArrayList<PathRectangle>>();
 
@@ -218,8 +224,24 @@ public class UI
         mainFrame.remove(mainPanel);
         mainPanel = new MainPanel(gridList);
         mainFrame.add(mainPanel);
-        mainFrame.pack();
-        mainFrame.setSize(mainFrameSize, mainFrameSize);
+        mainFrame.revalidate();
+    }
+
+    public void redrawAreaSize(int size, ArrayList<ArrayList<PathRectangle>> gridList)
+    {
+        
+        for(int i = 0; i < gridList.size(); i++)
+        {
+            for(int j = 0; j < gridList.get(i).size(); j++)
+            {
+                gridList.get(i).get(j).setBounds(size*i, size*i, size, size);
+            }
+        }
+
+        mainFrame.remove(mainPanel);
+        mainPanel = new MainPanel(gridList);
+        mainFrame.add(mainPanel);
+        mainFrame.revalidate();
     }
 
 }
