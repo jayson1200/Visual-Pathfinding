@@ -129,7 +129,7 @@ public class UI
         {
             public void mouseWheelMoved(MouseWheelEvent e)
             {
-                rectLenWidSize -= e.getPreciseWheelRotation() * 1;
+                mainPanel.rectLenWidSize -= e.getPreciseWheelRotation() * 1;
 
                 mainPanel.repaint();
                 mainFrame.revalidate();
@@ -223,25 +223,35 @@ public class UI
 
         mainFrame.remove(mainPanel);
         mainPanel = new MainPanel(gridList);
-        mainFrame.add(mainPanel);
-        mainFrame.revalidate();
-    }
 
-    public void redrawAreaSize(int size, ArrayList<ArrayList<PathRectangle>> gridList)
-    {
-        
-        for(int i = 0; i < gridList.size(); i++)
+        mainPanel.addMouseWheelListener(new MouseAdapter()
         {
-            for(int j = 0; j < gridList.get(i).size(); j++)
+            public void mouseWheelMoved(MouseWheelEvent e)
             {
-                gridList.get(i).get(j).setBounds(size*i, size*i, size, size);
-            }
-        }
+                mainPanel.rectLenWidSize -= e.getPreciseWheelRotation() * 1;
+                resizeRectangles(mainPanel.rectLenWidSize);
 
-        mainFrame.remove(mainPanel);
-        mainPanel = new MainPanel(gridList);
+                mainPanel.repaint();
+                mainFrame.revalidate();
+            }
+
+        }
+        );
+
         mainFrame.add(mainPanel);
         mainFrame.revalidate();
     }
 
-}
+    public void resizeRectangles(int size)
+    {
+        for(int i = 0; i < mainPanel.paintedRectangles.size(); i++)
+        {
+                for(int j = 0; j < mainPanel.paintedRectangles.get(0).size(); j++)
+                {
+                        mainPanel.paintedRectangles.get(i).get(j).setBounds(i* size, j * size, size, size);;
+                }
+            }
+    
+        }
+    }
+

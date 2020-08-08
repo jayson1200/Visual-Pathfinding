@@ -22,5 +22,4 @@ public class PathRectangle extends Rectangle
         this.recVal = wall;
     }
 
-
 }

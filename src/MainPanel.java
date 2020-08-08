@@ -10,9 +10,9 @@ import java.util.ArrayList;
 
 public class MainPanel extends JPanel {
 
-    private ArrayList<ArrayList<PathRectangle>> paintedRectangles = new ArrayList<>();
+    static ArrayList<ArrayList<PathRectangle>> paintedRectangles = new ArrayList<>();
 
-    int rectLenWidSize;
+    static int rectLenWidSize;
 
 
     public MainPanel(ArrayList<ArrayList<PathRectangle>> mPathRectangles) 
@@ -93,7 +93,7 @@ public class MainPanel extends JPanel {
             }
         });
 
-        );
+        //);
 
         rectLenWidSize = (int) (-13.2306 * (Math.log(0.0023*((paintedRectangles.size() + paintedRectangles.get(0).size()) / 2))));
     }
