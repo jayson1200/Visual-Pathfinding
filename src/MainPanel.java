@@ -1,6 +1,7 @@
 import javax.swing.*;
 
 
+
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -37,10 +38,12 @@ public class MainPanel extends JPanel {
                                 }
                                 else if(UI.declareStartBOX.isSelected())
                                 {
+                                    checkResetStart();
                                     paintedRectangles.get(i).get(j).setRecVal(PathRectangle.recType.STARTNODE);
                                 }
                                 else if(UI.declareEndBOX.isSelected())
                                 {
+                                    checkResetEnd();
                                     paintedRectangles.get(i).get(j).setRecVal(PathRectangle.recType.ENDNODE);
                                 }
                                 else if(UI.deselectBOX.isSelected())
@@ -75,10 +78,12 @@ public class MainPanel extends JPanel {
                                     }
                                     else if(UI.declareStartBOX.isSelected())
                                     {
+                                        checkResetStart();
                                         paintedRectangles.get(i).get(j).setRecVal(PathRectangle.recType.STARTNODE);
                                     }
                                     else if(UI.declareEndBOX.isSelected())
                                     {
+                                        checkResetEnd();
                                         paintedRectangles.get(i).get(j).setRecVal(PathRectangle.recType.ENDNODE);
                                     }
                                     else if(UI.deselectBOX.isSelected())
@@ -133,6 +138,36 @@ public class MainPanel extends JPanel {
                 g2D.setColor(Color.BLACK);
             }
         }
+    }
+
+    public void checkResetStart()
+    {
+        for(int i = 0; i < paintedRectangles.size(); i++)
+        {
+                for(int j = 0; j < paintedRectangles.get(0).size(); j++)
+                {
+                    if(paintedRectangles.get(i).get(j).getRecVal() == PathRectangle.recType.STARTNODE)
+                    {
+                        paintedRectangles.get(i).get(j).setRecVal(PathRectangle.recType.UNDECLARED);
+                    }
+                }
+        }
+    
+    }
+
+    public void checkResetEnd()
+    {
+        for(int i = 0; i < paintedRectangles.size(); i++)
+        {
+                for(int j = 0; j < paintedRectangles.get(0).size(); j++)
+                {
+                    if(paintedRectangles.get(i).get(j).getRecVal() == PathRectangle.recType.ENDNODE)
+                    {
+                        paintedRectangles.get(i).get(j).setRecVal(PathRectangle.recType.UNDECLARED);
+                    }
+                }
+        }
+    
     }
 
     public int getRectLenWidSize() {

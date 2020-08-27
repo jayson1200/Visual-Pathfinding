@@ -121,10 +121,10 @@ public class UI
             .addComponent(deselectBOX))
         );
         
-        //mainFrame.add(mainPanel, BorderLayout.CENTER);
         mainFrame.add(settingsPanel, BorderLayout.NORTH);
         }
         
+        //The main panel is destroyed, so I need to add it twice
         mainPanel.addMouseWheelListener(new MouseAdapter()
         {
             public void mouseWheelMoved(MouseWheelEvent e)
