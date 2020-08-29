@@ -11,6 +11,7 @@ import java.util.concurrent.*;
 public class UI 
 {
     static JFrame mainFrame = new JFrame("Pathfinding Visualization");;
+    static boolean run = false;
 
     ArrayList<ArrayList<PathRectangle>> initList = new ArrayList<ArrayList<PathRectangle>>();
     MainPanel mainPanel;
@@ -41,11 +42,6 @@ public class UI
     int rows = 10, cols = 10;
 
     GroupLayout optionsLayout = new GroupLayout(settingsPanel);
-
-    LinkedList<PathRectangle>[] connections;
-
-    
-
 
     public UI()
     {
@@ -130,6 +126,8 @@ public class UI
             public void mouseWheelMoved(MouseWheelEvent e)
             {
                 mainPanel.rectLenWidSize -= e.getPreciseWheelRotation() * 1;
+                resizeRectangles(mainPanel.rectLenWidSize);
+
 
                 mainPanel.repaint();
                 mainFrame.revalidate();
@@ -180,16 +178,37 @@ public class UI
 
         publishBTN.addActionListener(
         new ActionListener()
-        {
-                public void actionPerformed(ActionEvent e)
-                {
-                    SwingUtilities.invokeLater(runRedraw);
-            
-                }
+        {       
+        
+            public void actionPerformed(ActionEvent e)
+            {
+                mainPanel.endRect = null;
+                mainPanel.startRect = null;
+                SwingUtilities.invokeLater(runRedraw);
+            }
     
                 Runnable runRedraw = () -> redrawArea(Integer.valueOf((Integer) colSpinner.getValue()), (Integer) rowSpinner.getValue());
     
             });
+
+        startBTN.addActionListener(
+            new ActionListener(){
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                run = true;
+                mainPanel.findPath();
+            }
+        });
+
+        stopBTN.addActionListener(
+            new ActionListener(){
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                run = false;
+            }
+        });
 
         declareWallsBOX.setSelected(true);;
         mainFrame.pack();
