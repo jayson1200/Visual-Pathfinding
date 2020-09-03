@@ -1,7 +1,6 @@
 import javax.swing.*;
 
 
-
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -146,12 +145,12 @@ public class MainPanel extends JPanel {
                         break;
 
                         case OPEN:
-                        g2D.setColor(Color.GRAY);
+                        g2D.setColor(Color.BLUE);
                         g2D.fillRect(i*rectLenWidSize, j*rectLenWidSize, rectLenWidSize, rectLenWidSize);
                         break;
 
                         case CLOSED:
-                        g2D.setColor(Color.BLUE);
+                        g2D.setColor(Color.GRAY);
                         g2D.fillRect(i*rectLenWidSize, j*rectLenWidSize, rectLenWidSize, rectLenWidSize);
                         break;
                     }
@@ -209,20 +208,98 @@ public class MainPanel extends JPanel {
     {
         ArrayList<PathRectangle> openRects = new ArrayList<>();
         ArrayList<PathRectangle> closedRects = new ArrayList<>();
+        ArrayList<PathRectangle> tempOpenRects = new ArrayList<>();
 
         PathRectangle currentNode = startRect;
 
         assignHCost();
 
-        paintedRectangles.get(startRect.x/rectLenWidSize).get(startRect.y/rectLenWidSize).recVal = PathRectangle.recType.CLOSED;
-        closedRects.add(paintedRectangles.get(startRect.y/rectLenWidSize).get(startRect.x/rectLenWidSize));
+        paintedRectangles.get(startRect.x/rectLenWidSize).get(startRect.y/rectLenWidSize).recVal = PathRectangle.recType.OPEN;
+        openRects.add(paintedRectangles.get(startRect.x/rectLenWidSize).get(startRect.y/rectLenWidSize));
         repaint();
 
         while(currentNode != endRect && UI.run)
         {
-            UI.run = false;
-            //Find efficient way to find new open nodes
+            
+            int smlFCostIndex = 0;
+            
+            for(int i = 0; i < openRects.size(); i++)
+            {
+                openRects.get(i).setRectangleParent(currentNode);
+                double gCost = openRects.get(i).getRectangleParent().getGCost() + Math.sqrt(Math.pow((double) (currentNode.x/rectLenWidSize) -(openRects.get(i).x/rectLenWidSize), 2) + Math.pow((double) (currentNode.y/rectLenWidSize)-(openRects.get(i).y/rectLenWidSize), 2));
+                
+               
+                if(openRects.get(i).getFCost() < currentNode.getFCost())
+                {
+                    currentNode = openRects.get(i);
+                    smlFCostIndex = i;
+                }
+            }
+
+            openRects.get(smlFCostIndex).setRecVal(PathRectangle.recType.CLOSED);
+            closedRects.add(openRects.get(smlFCostIndex));
+
+            repaint();
+
+            if(((openRects.get(smlFCostIndex).x/rectLenWidSize) + 1 < paintedRectangles.size()) && paintedRectangles.get((openRects.get(smlFCostIndex).x/rectLenWidSize) + 1).get(openRects.get(smlFCostIndex).y/rectLenWidSize).getRecVal() != PathRectangle.recType.WALL  && paintedRectangles.get((openRects.get(smlFCostIndex).x/rectLenWidSize) + 1).get(openRects.get(smlFCostIndex).y/rectLenWidSize).getRecVal() != PathRectangle.recType.CLOSED)
+            {
+                tempOpenRects.add(paintedRectangles.get((openRects.get(smlFCostIndex).x/rectLenWidSize)+1).get(openRects.get(smlFCostIndex).y/rectLenWidSize));
+            }
+
+            if(((openRects.get(smlFCostIndex).x/rectLenWidSize) - 1 >= 0 && paintedRectangles.get((openRects.get(smlFCostIndex).x/rectLenWidSize) - 1).get(openRects.get(smlFCostIndex).y/rectLenWidSize).getRecVal() != PathRectangle.recType.WALL  && paintedRectangles.get((openRects.get(smlFCostIndex).x/rectLenWidSize) -1).get(openRects.get(smlFCostIndex).y/rectLenWidSize).getRecVal() != PathRectangle.recType.CLOSED))
+            {
+                tempOpenRects.add(paintedRectangles.get((openRects.get(smlFCostIndex).x/rectLenWidSize)-1).get(openRects.get(smlFCostIndex).y/rectLenWidSize));
+            }
+
+            if(((openRects.get(smlFCostIndex).y/rectLenWidSize) + 1 < paintedRectangles.get(0).size() && paintedRectangles.get((openRects.get(smlFCostIndex).x/rectLenWidSize)).get((openRects.get(smlFCostIndex).y/rectLenWidSize)+1).getRecVal() != PathRectangle.recType.WALL  && paintedRectangles.get((openRects.get(smlFCostIndex).x/rectLenWidSize)).get((openRects.get(smlFCostIndex).y/rectLenWidSize) +1).getRecVal() != PathRectangle.recType.CLOSED))
+            {
+                tempOpenRects.add(paintedRectangles.get((openRects.get(smlFCostIndex).x/rectLenWidSize)).get((openRects.get(smlFCostIndex).y/rectLenWidSize)+ 1));
+            }
+
+            if(((openRects.get(smlFCostIndex).y/rectLenWidSize) - 1 >= 0 && paintedRectangles.get((openRects.get(smlFCostIndex).x/rectLenWidSize)).get((openRects.get(smlFCostIndex).y/rectLenWidSize)-1).getRecVal() != PathRectangle.recType.WALL  && paintedRectangles.get((openRects.get(smlFCostIndex).x/rectLenWidSize)).get((openRects.get(smlFCostIndex).y/rectLenWidSize) -1).getRecVal() != PathRectangle.recType.CLOSED))
+            {
+                tempOpenRects.add(paintedRectangles.get((openRects.get(smlFCostIndex).x/rectLenWidSize)).get((openRects.get(smlFCostIndex).y/rectLenWidSize)- 1));
+            }
+
+            if(tempOpenRects.size() == 0)
+            {
+                System.out.println("No Path");
+            }
+                    
+
+            for(int i = 0; i < tempOpenRects.size(); i++)
+            {   
+                for(int j = 0; j < openRects.size(); j++)
+                {
+                    if((openRects.get(j).x/rectLenWidSize) == (tempOpenRects.get(i).x/rectLenWidSize) && (openRects.get(j).y/rectLenWidSize) == (tempOpenRects.get(i).y/rectLenWidSize))
+                    {
+                        double gCostComparable = openRects.get(smlFCostIndex).getGCost() + Math.sqrt(Math.pow((double) (currentNode.x/rectLenWidSize) -(openRects.get(j).x/rectLenWidSize), 2) + Math.pow((double) (currentNode.y/rectLenWidSize)-(openRects.get(i).y/rectLenWidSize), 2));
+
+                        if(gCostComparable < tempOpenRects.get(i).getGCost())
+                        {
+                            tempOpenRects.get(i).setRectangleParent(openRects.get(smlFCostIndex));
+                            tempOpenRects.get(i).setGCost(gCostComparable);
+                            openRects.remove(j);
+                        }
+                        else
+                        {
+                            tempOpenRects.remove(i);
+                        }
+                    }
+                }
+            }
+
+            openRects.remove(smlFCostIndex);
+
+            for(int i = 0; i < tempOpenRects.size(); i++)
+            {
+                tempOpenRects.get(i).setRecVal(PathRectangle.recType.OPEN);
+                openRects.add(tempOpenRects.get(i));
+            }
+
         }
+
+        System.out.println("Found Path");
     }
 
     public void assignHCost()

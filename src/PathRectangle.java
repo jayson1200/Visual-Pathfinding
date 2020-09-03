@@ -8,6 +8,7 @@ public class PathRectangle extends Rectangle
     public PathRectangle rectangleParent;
 
     double hCost = 0;
+    double gCost = 0;
 
     public PathRectangle(int x, int y, int width, int height)
     {
@@ -39,4 +40,19 @@ public class PathRectangle extends Rectangle
     public void setHCost(double hCost) {
         this.hCost = hCost;
     }
+
+
+    public double getGCost() {
+        return this.gCost;
+    }
+
+    public void setGCost(double gCost) {
+        this.gCost = gCost;
+    }
+
+    public double getFCost()
+    {
+        return gCost + hCost;
+    }
+
 }
