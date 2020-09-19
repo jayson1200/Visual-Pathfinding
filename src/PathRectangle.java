@@ -16,7 +16,8 @@ public class PathRectangle extends Rectangle
     }
 
 
-    public enum recType{WALL, STARTNODE, ENDNODE, UNDECLARED, OPEN, CLOSED}
+
+    public enum recType{WALL, STARTNODE, ENDNODE, UNDECLARED, OPEN, CLOSED, PATH}
 
     public recType getRecVal() {
         return this.recVal;
