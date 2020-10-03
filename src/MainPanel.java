@@ -19,7 +19,7 @@ public class MainPanel extends JPanel implements ActionListener {
     static public PathRectangle startRect;
     static public PathRectangle endRect;
 
-    Timer paintTime = new Timer(100, this);
+    Timer paintTime = new Timer(UI.speedSlider.getValue(), this);
 
     public MainPanel(ArrayList<ArrayList<PathRectangle>> mPathRectangles) {
         paintedRectangles = mPathRectangles;
@@ -146,6 +146,7 @@ public class MainPanel extends JPanel implements ActionListener {
             }
         }
 
+        paintTime.setDelay(UI.speedSlider.getValue());
         paintTime.start();
     }
 

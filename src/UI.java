@@ -28,7 +28,7 @@ public class UI
     JButton stopBTN = new JButton("Stop");
     JButton clearBTN = new JButton("Clear");
 
-    JSlider speedSlider = new JSlider(1, 100);
+    static JSlider speedSlider = new JSlider(1, 1000);
 
     JLabel speedLabel = new JLabel("Speed:");
     JLabel rowsLabel = new JLabel("Rows:");
