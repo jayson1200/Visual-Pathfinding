@@ -28,7 +28,7 @@ public class UI
     JButton stopBTN = new JButton("Stop");
     JButton clearBTN = new JButton("Clear");
 
-    static JSlider speedSlider = new JSlider(1, 1000);
+    static JSlider speedSlider = new JSlider(0, 1000);
 
     JLabel speedLabel = new JLabel("Speed:");
     JLabel rowsLabel = new JLabel("Rows:");
@@ -120,7 +120,7 @@ public class UI
         mainFrame.add(settingsPanel, BorderLayout.NORTH);
         }
         
-        //The main panel is destroyed, so I need to add it twice
+    
         mainPanel.addMouseWheelListener(new MouseAdapter()
         {
             public void mouseWheelMoved(MouseWheelEvent e)
@@ -184,6 +184,10 @@ public class UI
             {
                 mainPanel.endRect = null;
                 mainPanel.startRect = null;
+                mainPanel.initReverseCurrentNode = true;
+                mainPanel.shouldInit = true;
+                mainPanel.shouldRunDrawPath = false;
+
                 SwingUtilities.invokeLater(runRedraw);
             }
     
@@ -209,6 +213,42 @@ public class UI
                 run = false;
             }
         });
+
+        clearBTN.addActionListener(
+            new ActionListener()
+            {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    mainPanel.initReverseCurrentNode = true;
+                    mainPanel.shouldInit = true;
+                    mainPanel.shouldRunDrawPath = false;
+
+                    MainPanel.paintedRectangles.get(mainPanel.startRect.x / mainPanel.rectLenWidSize).get(mainPanel.startRect.y / mainPanel.rectLenWidSize)
+                    .setRecVal(PathRectangle.recType.STARTNODE);
+
+                    MainPanel.paintedRectangles.get(mainPanel.endRect.x / mainPanel.rectLenWidSize).get(mainPanel.endRect.y / mainPanel.rectLenWidSize)
+                    .setRecVal(PathRectangle.recType.ENDNODE);
+                    
+                    for (int i = 0; i < MainPanel.paintedRectangles.size(); i++) 
+                    {
+                        for (int j = 0; j < MainPanel.paintedRectangles.get(0).size(); j++) 
+                        {
+                            if(MainPanel.paintedRectangles.get(i).get(j).getRecVal() == PathRectangle.recType.OPEN ||
+                            MainPanel.paintedRectangles.get(i).get(j).getRecVal() == PathRectangle.recType.CLOSED ||
+                            MainPanel.paintedRectangles.get(i).get(j).getRecVal() == PathRectangle.recType.PATH && 
+                            MainPanel.paintedRectangles.get(i).get(j) != mainPanel.startRect &&
+                            MainPanel.paintedRectangles.get(i).get(j) != mainPanel.endRect)
+                            {
+                                MainPanel.paintedRectangles.get(i).get(j).setRecVal(PathRectangle.recType.UNDECLARED);
+                            }
+                            
+                        }
+    
+                    }
+                }
+
+            }
+        );
 
         declareWallsBOX.setSelected(true);;
         mainFrame.pack();

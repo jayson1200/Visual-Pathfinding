@@ -320,8 +320,7 @@ public class MainPanel extends JPanel implements ActionListener {
         }
     }
 
-    //This is not a permanent solution
-    boolean initReverseCurrentNode = true;
+    public boolean initReverseCurrentNode = true;
     PathRectangle reverseCurrentNode;
 
     public void drawPath()
@@ -347,9 +346,9 @@ public class MainPanel extends JPanel implements ActionListener {
 
     }
 
-    //you dont want to run this multiple times fix it first
-    boolean shouldInit = true;
-    boolean shouldRunDrawPath = false;
+
+    public boolean shouldInit = true;
+    public boolean shouldRunDrawPath = false;
 
     public void findPath() {
 
