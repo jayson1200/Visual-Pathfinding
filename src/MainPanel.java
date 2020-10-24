@@ -281,23 +281,87 @@ public class MainPanel extends JPanel implements ActionListener {
                     + Math.pow((double) (currentNode.y / rectLenWidSize) - (tempOpenRects.get(i).y / rectLenWidSize),
                             2))));
         }
+    }
 
-        for (int i = 0; i < tempOpenRects.size(); i++) {
-            for (int j = 0; j < openRects.size(); j++) {
-                if ((openRects.get(j).x / rectLenWidSize) == (tempOpenRects.get(i).x / rectLenWidSize)
-                        && (openRects.get(j).y / rectLenWidSize) == (tempOpenRects.get(i).y / rectLenWidSize)) {
-                    double gCostComparable = Math.abs(openRects.get(smlFCostIndex).getGCost() + Math.sqrt(Math
-                            .pow((double) (currentNode.x / rectLenWidSize) - (openRects.get(j).x / rectLenWidSize), 2)
+    public void checkForFasterPath()
+    {
+        // for (int i = 0; i < tempOpenRects.size(); i++) {
+        //     for (int j = 0; j < openRects.size(); j++) {
+        //         if ((openRects.get(j).x / rectLenWidSize) == (tempOpenRects.get(i).x / rectLenWidSize)
+        //                 && (openRects.get(j).y / rectLenWidSize) == (tempOpenRects.get(i).y / rectLenWidSize)) {
+                            
+        //             double gCostComparable = Math.abs(openRects.get(smlFCostIndex).getGCost() + Math.sqrt(Math
+        //                     .pow((double) (currentNode.x / rectLenWidSize) - (openRects.get(j).x / rectLenWidSize), 2)
+        //                     + Math.pow(
+        //                             (double) (currentNode.y / rectLenWidSize) - (openRects.get(j).y / rectLenWidSize),
+        //                             2)));
+
+        //             if (gCostComparable < tempOpenRects.get(i).getGCost()) {
+        //                 tempOpenRects.get(i).setRectangleParent(openRects.get(smlFCostIndex));
+        //                 tempOpenRects.get(i).setGCost(gCostComparable);
+        //                 openRects.remove(j);
+        //             } else {
+        //                 tempOpenRects.remove(i);
+        //             }
+        //             break;
+        //         }
+        //     }
+        // }
+
+        ArrayList<PathRectangle> closedListFasterPath = new ArrayList<>(); 
+
+        if (((openRects.get(smlFCostIndex).x / rectLenWidSize) + 1 < paintedRectangles.size())
+                && paintedRectangles.get((openRects.get(smlFCostIndex).x / rectLenWidSize) + 1)
+                        .get(openRects.get(smlFCostIndex).y / rectLenWidSize).getRecVal() != PathRectangle.recType.WALL){
+            closedListFasterPath.add(paintedRectangles.get((openRects.get(smlFCostIndex).x / rectLenWidSize) + 1)
+                    .get(openRects.get(smlFCostIndex).y / rectLenWidSize));
+        }
+
+        if (((openRects.get(smlFCostIndex).x / rectLenWidSize) - 1 >= 0
+                && paintedRectangles.get((openRects.get(smlFCostIndex).x / rectLenWidSize) - 1)
+                        .get(openRects.get(smlFCostIndex).y / rectLenWidSize).getRecVal() != PathRectangle.recType.WALL)) {
+            closedListFasterPath.add(paintedRectangles.get((openRects.get(smlFCostIndex).x / rectLenWidSize) - 1)
+                    .get(openRects.get(smlFCostIndex).y / rectLenWidSize));
+        }
+
+        if (((openRects.get(smlFCostIndex).y / rectLenWidSize) + 1 < paintedRectangles.get(0).size()
+                && paintedRectangles.get((openRects.get(smlFCostIndex).x / rectLenWidSize))
+                        .get((openRects.get(smlFCostIndex).y / rectLenWidSize) + 1)
+                        .getRecVal() != PathRectangle.recType.WALL)) {
+            closedListFasterPath.add(paintedRectangles.get((openRects.get(smlFCostIndex).x / rectLenWidSize))
+                    .get((openRects.get(smlFCostIndex).y / rectLenWidSize) + 1));
+        }
+
+        if (((openRects.get(smlFCostIndex).y / rectLenWidSize) - 1 >= 0
+                && paintedRectangles.get((openRects.get(smlFCostIndex).x / rectLenWidSize))
+                        .get((openRects.get(smlFCostIndex).y / rectLenWidSize) - 1)
+                        .getRecVal() != PathRectangle.recType.WALL)) {
+            closedListFasterPath.add(paintedRectangles.get((openRects.get(smlFCostIndex).x / rectLenWidSize))
+                    .get((openRects.get(smlFCostIndex).y / rectLenWidSize) - 1));
+        }    
+
+
+
+
+
+
+
+
+
+        for (int i = 0; i < closedListFasterPath.size(); i++) {
+            for (int j = 0; j < closedRects.size(); j++) {
+                if ((closedRects.get(j).x / rectLenWidSize) == (closedListFasterPath.get(i).x / rectLenWidSize)
+                        && (closedRects.get(j).y / rectLenWidSize) == (closedListFasterPath.get(i).y / rectLenWidSize)){
+                            
+                    double gCostComparable = Math.abs(closedListFasterPath.get(i).getGCost() + Math.sqrt(Math
+                            .pow((double) (currentNode.x / rectLenWidSize) - (closedListFasterPath.get(i).x / rectLenWidSize), 2)
                             + Math.pow(
-                                    (double) (currentNode.y / rectLenWidSize) - (openRects.get(j).y / rectLenWidSize),
+                                    (double) (currentNode.y / rectLenWidSize) - (closedListFasterPath.get(i).y / rectLenWidSize),
                                     2)));
 
-                    if (gCostComparable < tempOpenRects.get(i).getGCost()) {
-                        tempOpenRects.get(i).setRectangleParent(openRects.get(smlFCostIndex));
-                        tempOpenRects.get(i).setGCost(gCostComparable);
-                        openRects.remove(j);
-                    } else {
-                        tempOpenRects.remove(i);
+                    if (gCostComparable < currentNode.getGCost()) {
+                        currentNode.setRectangleParent(closedRects.get(j));
+                        currentNode.setGCost(gCostComparable);
                     }
                     break;
                 }
@@ -363,32 +427,33 @@ public class MainPanel extends JPanel implements ActionListener {
             UI.run = false;
         }
 
-            if (openRects.size() == 0) {
-                System.out.println("No Path");
-                UI.run = false;
-            }
+        if (openRects.size() == 0) {
+            System.out.println("No Path");
+            UI.run = false;
+        }
 
-            findSmlFCostRect();
+        findSmlFCostRect();
 
-            if (currentNode == endRect) {
-                System.out.println("Found Path");
-                closedRects.add(currentNode);
-                shouldRunDrawPath = true;
-            }
+        if (currentNode == endRect) {
+            System.out.println("Found Path");
+            closedRects.add(currentNode);
+            shouldRunDrawPath = true;
+        }
 
-            addSmlFCostRectToOpenClose();
+        addSmlFCostRectToOpenClose();
 
 
-            findSurroundingRects();
+        findSurroundingRects();
 
-            setTempOpenRectGCost();
+        setTempOpenRectGCost();
+        
+        checkForFasterPath();
 
-            removeCurrentNodeFromOpenList();
+        removeCurrentNodeFromOpenList();
 
-            addTempOpenListToOpenList();
+        addTempOpenListToOpenList();
 
-            tempOpenRects = new ArrayList<>();
-
+        tempOpenRects = new ArrayList<>();
     }
 
     public void assignHCost() {
@@ -404,7 +469,6 @@ public class MainPanel extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        // TODO Auto-generated method stub
         repaint();
     }
 }
