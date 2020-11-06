@@ -10,7 +10,6 @@ public class App {
         //Puts stuff in a quene to make sure running long operations doesn't freeze up anything
         //Use when you are about to run along operation on a button click for instance redrawing everything
         SwingUtilities.invokeLater(init); 
-       
     }
 
 }

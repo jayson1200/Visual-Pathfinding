@@ -285,42 +285,19 @@ public class MainPanel extends JPanel implements ActionListener {
 
     public void checkForFasterPath()
     {
-        // for (int i = 0; i < tempOpenRects.size(); i++) {
-        //     for (int j = 0; j < openRects.size(); j++) {
-        //         if ((openRects.get(j).x / rectLenWidSize) == (tempOpenRects.get(i).x / rectLenWidSize)
-        //                 && (openRects.get(j).y / rectLenWidSize) == (tempOpenRects.get(i).y / rectLenWidSize)) {
-                            
-        //             double gCostComparable = Math.abs(openRects.get(smlFCostIndex).getGCost() + Math.sqrt(Math
-        //                     .pow((double) (currentNode.x / rectLenWidSize) - (openRects.get(j).x / rectLenWidSize), 2)
-        //                     + Math.pow(
-        //                             (double) (currentNode.y / rectLenWidSize) - (openRects.get(j).y / rectLenWidSize),
-        //                             2)));
-
-        //             if (gCostComparable < tempOpenRects.get(i).getGCost()) {
-        //                 tempOpenRects.get(i).setRectangleParent(openRects.get(smlFCostIndex));
-        //                 tempOpenRects.get(i).setGCost(gCostComparable);
-        //                 openRects.remove(j);
-        //             } else {
-        //                 tempOpenRects.remove(i);
-        //             }
-        //             break;
-        //         }
-        //     }
-        // }
-
-        ArrayList<PathRectangle> closedListFasterPath = new ArrayList<>(); 
+        ArrayList<PathRectangle> findFasterPathList = new ArrayList<>(); 
 
         if (((openRects.get(smlFCostIndex).x / rectLenWidSize) + 1 < paintedRectangles.size())
                 && paintedRectangles.get((openRects.get(smlFCostIndex).x / rectLenWidSize) + 1)
                         .get(openRects.get(smlFCostIndex).y / rectLenWidSize).getRecVal() != PathRectangle.recType.WALL){
-            closedListFasterPath.add(paintedRectangles.get((openRects.get(smlFCostIndex).x / rectLenWidSize) + 1)
+            findFasterPathList.add(paintedRectangles.get((openRects.get(smlFCostIndex).x / rectLenWidSize) + 1)
                     .get(openRects.get(smlFCostIndex).y / rectLenWidSize));
         }
 
         if (((openRects.get(smlFCostIndex).x / rectLenWidSize) - 1 >= 0
                 && paintedRectangles.get((openRects.get(smlFCostIndex).x / rectLenWidSize) - 1)
                         .get(openRects.get(smlFCostIndex).y / rectLenWidSize).getRecVal() != PathRectangle.recType.WALL)) {
-            closedListFasterPath.add(paintedRectangles.get((openRects.get(smlFCostIndex).x / rectLenWidSize) - 1)
+            findFasterPathList.add(paintedRectangles.get((openRects.get(smlFCostIndex).x / rectLenWidSize) - 1)
                     .get(openRects.get(smlFCostIndex).y / rectLenWidSize));
         }
 
@@ -328,7 +305,7 @@ public class MainPanel extends JPanel implements ActionListener {
                 && paintedRectangles.get((openRects.get(smlFCostIndex).x / rectLenWidSize))
                         .get((openRects.get(smlFCostIndex).y / rectLenWidSize) + 1)
                         .getRecVal() != PathRectangle.recType.WALL)) {
-            closedListFasterPath.add(paintedRectangles.get((openRects.get(smlFCostIndex).x / rectLenWidSize))
+            findFasterPathList.add(paintedRectangles.get((openRects.get(smlFCostIndex).x / rectLenWidSize))
                     .get((openRects.get(smlFCostIndex).y / rectLenWidSize) + 1));
         }
 
@@ -336,34 +313,46 @@ public class MainPanel extends JPanel implements ActionListener {
                 && paintedRectangles.get((openRects.get(smlFCostIndex).x / rectLenWidSize))
                         .get((openRects.get(smlFCostIndex).y / rectLenWidSize) - 1)
                         .getRecVal() != PathRectangle.recType.WALL)) {
-            closedListFasterPath.add(paintedRectangles.get((openRects.get(smlFCostIndex).x / rectLenWidSize))
+            findFasterPathList.add(paintedRectangles.get((openRects.get(smlFCostIndex).x / rectLenWidSize))
                     .get((openRects.get(smlFCostIndex).y / rectLenWidSize) - 1));
         }    
 
-
-
-
-
-
-
-
-
-        for (int i = 0; i < closedListFasterPath.size(); i++) {
-            for (int j = 0; j < closedRects.size(); j++) {
-                if ((closedRects.get(j).x / rectLenWidSize) == (closedListFasterPath.get(i).x / rectLenWidSize)
-                        && (closedRects.get(j).y / rectLenWidSize) == (closedListFasterPath.get(i).y / rectLenWidSize)){
+        for (int i = 0; i < findFasterPathList.size(); i++) {
+            for (int j = 0; j < openRects.size(); j++) {
+                if ((openRects.get(j).x / rectLenWidSize) == (findFasterPathList.get(i).x / rectLenWidSize)
+                        && (openRects.get(j).y / rectLenWidSize) == (findFasterPathList.get(i).y / rectLenWidSize)){
                             
-                    double gCostComparable = Math.abs(closedListFasterPath.get(i).getGCost() + Math.sqrt(Math
-                            .pow((double) (currentNode.x / rectLenWidSize) - (closedListFasterPath.get(i).x / rectLenWidSize), 2)
+                    double gCostComparable = Math.abs(findFasterPathList.get(i).getGCost() + Math.sqrt(Math
+                            .pow((double) (currentNode.x / rectLenWidSize) - (findFasterPathList.get(i).x / rectLenWidSize), 2)
                             + Math.pow(
-                                    (double) (currentNode.y / rectLenWidSize) - (closedListFasterPath.get(i).y / rectLenWidSize),
+                                    (double) (currentNode.y / rectLenWidSize) - (findFasterPathList.get(i).y / rectLenWidSize),
+                                    2)));
+
+                    if (gCostComparable < currentNode.getGCost()) {
+                        currentNode.setRectangleParent(openRects.get(j));
+                        currentNode.setGCost(gCostComparable);
+                    }
+                    //break;
+                }
+            }
+        }
+        
+        for (int i = 0; i < findFasterPathList.size(); i++) {
+            for (int j = 0; j < closedRects.size(); j++) {
+                if ((closedRects.get(j).x / rectLenWidSize) == (findFasterPathList.get(i).x / rectLenWidSize)
+                        && (closedRects.get(j).y / rectLenWidSize) == (findFasterPathList.get(i).y / rectLenWidSize)){
+                            
+                    double gCostComparable = Math.abs(findFasterPathList.get(i).getGCost() + Math.sqrt(Math
+                            .pow((double) (currentNode.x / rectLenWidSize) - (findFasterPathList.get(i).x / rectLenWidSize), 2)
+                            + Math.pow(
+                                    (double) (currentNode.y / rectLenWidSize) - (findFasterPathList.get(i).y / rectLenWidSize),
                                     2)));
 
                     if (gCostComparable < currentNode.getGCost()) {
                         currentNode.setRectangleParent(closedRects.get(j));
                         currentNode.setGCost(gCostComparable);
                     }
-                    break;
+                    //break;
                 }
             }
         }
