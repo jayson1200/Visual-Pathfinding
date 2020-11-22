@@ -356,6 +356,7 @@ public class MainPanel extends JPanel implements ActionListener {
                 }
             }
         }
+        
     }
 
     public void removeCurrentNodeFromOpenList() {
